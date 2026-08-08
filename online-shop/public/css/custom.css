@@ -1,0 +1,348 @@
+:root {
+    --brand: #4f46e5;
+    --brand-dark: #4338ca;
+    --brand-soft: #eef2ff;
+}
+
+body {
+    background-color: #f5f6fa;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Storefront top bar ---------- */
+.topbar {
+    background: #1e1b4b;
+    color: #c7d2fe;
+    font-size: .8rem;
+}
+
+.topbar a {
+    color: #e0e7ff;
+    text-decoration: none;
+}
+
+.topbar a:hover {
+    color: #fff;
+}
+
+.storefront-nav {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(30, 27, 75, .06);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    color: var(--brand) !important;
+    letter-spacing: -.3px;
+}
+
+.nav-icon {
+    color: #374151;
+    text-decoration: none;
+    position: relative;
+    font-size: 1.15rem;
+}
+
+.nav-icon:hover {
+    color: var(--brand);
+}
+
+.nav-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 50%;
+    font-size: .65rem;
+    min-width: 17px;
+    height: 17px;
+    line-height: 17px;
+    text-align: center;
+    font-weight: 700;
+    padding: 0 4px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-brand {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+.btn-brand:hover,
+.btn-brand:focus {
+    background: var(--brand-dark);
+    border-color: var(--brand-dark);
+    color: #fff;
+}
+
+.btn-outline-brand {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+
+.btn-outline-brand:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    border: 1px solid #eef0f4;
+    border-radius: .75rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .05);
+}
+
+.card-header {
+    background: #fff;
+    border-bottom: 1px solid #eef0f4;
+    font-weight: 600;
+}
+
+.card-footer {
+    background: #fff;
+    border-top: 1px solid #eef0f4;
+}
+
+/* ---------- Product cards ---------- */
+.product-card {
+    transition: transform .15s ease, box-shadow .15s ease;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, .1);
+}
+
+.product-card .product-image {
+    height: 220px;
+    object-fit: cover;
+    background: #fff;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ef4444;
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 50rem;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #9ca3af;
+    font-size: .85rem;
+}
+
+/* ---------- Sidebar layouts ---------- */
+.dashboard-layout {
+    min-height: 100vh;
+}
+
+.sidebar {
+    background: #1e1b4b;
+    min-height: 100vh;
+}
+
+.sidebar .brand {
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.05rem;
+}
+
+.sidebar .nav-link {
+    color: #c7d2fe;
+    border-radius: .5rem;
+    padding: .6rem .9rem;
+    margin-bottom: .15rem;
+    font-size: .92rem;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+}
+
+.sidebar .nav-link.active {
+    background: var(--brand);
+    color: #fff;
+}
+
+.sidebar .nav-link i {
+    width: 1.3rem;
+    text-align: center;
+}
+
+.sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, .1);
+}
+
+/* ---------- Dashboard cards ---------- */
+.stat-card {
+    border-radius: .75rem;
+    border: 0;
+    color: #fff;
+    padding: 1.1rem 1.25rem;
+}
+
+.stat-card .stat-icon {
+    font-size: 2rem;
+    opacity: .85;
+}
+
+.stat-card .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.stat-card .stat-label {
+    opacity: .85;
+    font-size: .85rem;
+}
+
+.stat-blue { background: #4f46e5; }
+.stat-green { background: #059669; }
+.stat-orange { background: #d97706; }
+.stat-red { background: #dc2626; }
+.stat-indigo { background: #4338ca; }
+.stat-teal { background: #0d9488; }
+.stat-purple { background: #9333ea; }
+.stat-gray { background: #475569; }
+.stat-yellow { background: #ca8a04; }
+
+/* ---------- Tables ---------- */
+.table th {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #64748b;
+    border-bottom-width: 1px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* ---------- Auth pages ---------- */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+    padding: 1rem;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    border: 0;
+    border-radius: 1rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    background: linear-gradient(120deg, #1e1b4b 0%, #4338ca 100%);
+    color: #fff;
+    border-radius: 1rem;
+}
+
+/* ---------- Misc ---------- */
+.section-title {
+    font-weight: 700;
+    color: #111827;
+}
+
+.text-brand {
+    color: var(--brand);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.stars {
+    color: #f59e0b;
+}
+
+.bg-soft-brand {
+    background: var(--brand-soft);
+}
+
+.product-detail-image {
+    width: 100%;
+    max-height: 460px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: .75rem;
+    border: 1px solid #eef0f4;
+}
+
+.search-result-count {
+    color: #6b7280;
+    font-size: .9rem;
+}
+
+/* Notification dropdown */
+.notif-dropdown {
+    width: 340px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: .6rem .85rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    display: block;
+}
+
+.notif-item:hover {
+    background: #f8fafc;
+}
+
+.notif-item.unread {
+    background: var(--brand-soft);
+}
+
+.notif-item .notif-time {
+    font-size: .72rem;
+    color: #94a3b8;
+}
+
+/* Rating input */
+.rating-input .star {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #d1d5db;
+    transition: color .1s;
+}
+
+.rating-input .star.selected {
+    color: #f59e0b;
+}
+
+/* filter card */
+.filter-card {
+    position: sticky;
+    top: 1rem;
+}
