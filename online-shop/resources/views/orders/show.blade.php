@@ -59,16 +59,16 @@
                                                     <a href="{{ route('products.show', $item->product->slug) }}" class="text-decoration-none small fw-semibold text-dark">{{ $item->product->name }}</a>
                                                 </div>
                                             </td>
-                                            <td class="text-center">${{ number_format($item->price, 2) }}</td>
+                                            <td class="text-center">Rs. {{ number_format($item->price, 2) }}</td>
                                             <td class="text-center">{{ $item->quantity }}</td>
-                                            <td class="text-end fw-semibold">${{ number_format($item->subtotal, 2) }}</td>
+                                            <td class="text-end fw-semibold">Rs. {{ number_format($item->subtotal, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot class="bg-light">
                                     <tr>
                                         <td colspan="3" class="text-end fw-semibold">Total</td>
-                                        <td class="text-end fw-bold text-brand">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="text-end fw-bold text-brand">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -125,12 +125,52 @@
             </div>
 
             <div class="col-lg-4">
+                @if ($sellers->isNotEmpty())
+                    <div class="card mb-3">
+                        <div class="card-header"><i class="bi bi-shop me-1"></i> Sellers</div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                @foreach ($sellers as $seller)
+                                    <li class="list-group-item d-flex align-items-center gap-2">
+                                        <div class="avatar-sm bg-soft-brand text-brand d-flex align-items-center justify-content-center fw-bold flex-shrink-0">
+                                            {{ strtoupper(substr($seller->name, 0, 1)) }}
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="small fw-semibold text-truncate">{{ $seller->name }}</div>
+                                            <small class="text-muted">Verified Seller</small>
+                                        </div>
+                                        <form action="{{ route('messages.start', $seller->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-brand" title="Message seller">
+                                                <i class="bi bi-chat-dots me-1"></i> Message
+                                            </button>
+                                        </form>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="card mb-3">
                     <div class="card-header"><i class="bi bi-truck me-1"></i> Shipping Information</div>
                     <div class="card-body small">
                         <p class="mb-1"><strong>{{ $order->customer_name }}</strong></p>
                         <p class="mb-1"><i class="bi bi-telephone me-1"></i>{{ $order->phone }}</p>
-                        <p class="mb-0"><i class="bi bi-geo-alt me-1"></i>{{ $order->shipping_address }}</p>
+                        @if ($order->customer_email)
+                            <p class="mb-1"><i class="bi bi-envelope me-1"></i>{{ $order->customer_email }}</p>
+                        @endif
+                        <p class="mb-1"><i class="bi bi-geo-alt me-1"></i>{{ $order->shipping_address }}</p>
+                        <div class="d-flex flex-wrap gap-1">
+                            @if ($order->city)<span class="badge bg-light text-dark border">{{ $order->city }}</span>@endif
+                            @if ($order->state)<span class="badge bg-light text-dark border">{{ $order->state }}</span>@endif
+                            @if ($order->postal_code)<span class="badge bg-light text-dark border">{{ $order->postal_code }}</span>@endif
+                            @if ($order->country)<span class="badge bg-light text-dark border">{{ $order->country }}</span>@endif
+                        </div>
+                        @if ($order->notes)
+                            <hr class="my-2">
+                            <p class="mb-0 text-muted"><i class="bi bi-sticky me-1"></i><strong>Notes:</strong> {{ $order->notes }}</p>
+                        @endif
                     </div>
                 </div>
 

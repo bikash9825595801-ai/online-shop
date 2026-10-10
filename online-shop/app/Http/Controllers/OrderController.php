@@ -33,7 +33,13 @@ class OrderController extends Controller
     {
         abort_unless($order->customer_id === Auth::id(), 403);
 
-        $order->load(['items.product.category', 'payment']);
+        $order->load(['items.product.category', 'items.seller', 'payment']);
+
+        $sellers = $order->items
+            ->pluck('seller')
+            ->filter()
+            ->unique('id')
+            ->values();
 
         // Products from delivered orders that can be reviewed
         $reviewable = collect();
@@ -48,7 +54,7 @@ class OrderController extends Controller
             });
         }
 
-        return view('orders.show', compact('order', 'reviewable'));
+        return view('orders.show', compact('order', 'reviewable', 'sellers'));
     }
 
     public function cancel(Request $request, Order $order): RedirectResponse

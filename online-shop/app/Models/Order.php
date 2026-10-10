@@ -13,15 +13,23 @@ class Order extends Model
     use HasFactory;
 
     public const ORDER_PENDING = 'pending';
+
     public const ORDER_CONFIRMED = 'confirmed';
+
     public const ORDER_PROCESSING = 'processing';
+
     public const ORDER_SHIPPED = 'shipped';
+
     public const ORDER_DELIVERED = 'delivered';
+
     public const ORDER_CANCELLED = 'cancelled';
 
     public const PAYMENT_PENDING = 'pending';
+
     public const PAYMENT_PAID = 'paid';
+
     public const PAYMENT_REFUNDED = 'refunded';
+
     public const PAYMENT_FAILED = 'failed';
 
     public const ORDER_STATUSES = [
@@ -38,8 +46,14 @@ class Order extends Model
         'order_number',
         'total_amount',
         'shipping_address',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'notes',
         'phone',
         'customer_name',
+        'customer_email',
         'payment_status',
         'order_status',
         'cancellation_reason',
@@ -77,5 +91,28 @@ class Order extends Model
     public function canCancel(): bool
     {
         return in_array($this->order_status, [self::ORDER_PENDING, self::ORDER_CONFIRMED], true);
+    }
+
+    public function customerName(): string
+    {
+        return $this->customer_name ?? $this->customer?->name ?? '—';
+    }
+
+    public function customerEmail(): string
+    {
+        return $this->customer_email ?? $this->customer?->email ?? '—';
+    }
+
+    public function fullAddress(): string
+    {
+        $parts = array_filter([
+            $this->shipping_address,
+            $this->city,
+            $this->state,
+            $this->postal_code,
+            $this->country,
+        ]);
+
+        return implode(', ', $parts) ?: '—';
     }
 }

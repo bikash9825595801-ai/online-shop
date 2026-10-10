@@ -3,18 +3,12 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use App\Models\UserNotification;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class MessageController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        $messages = UserNotification::where('user_id', Auth::id())
-            ->orderByDesc('created_at')
-            ->paginate(15);
-
-        return view('seller.messages.index', compact('messages'));
+        return redirect()->route('messages.index');
     }
 }

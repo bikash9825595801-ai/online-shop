@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted small">Collected (Paid)</div>
-                    <h5 class="mb-0 text-success">${{ number_format($totalCollected, 2) }}</h5>
+                    <h5 class="mb-0 text-success">Rs. {{ number_format($totalCollected, 2) }}</h5>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted small">Pending</div>
-                    <h5 class="mb-0 text-warning">${{ number_format($totalPending, 2) }}</h5>
+                    <h5 class="mb-0 text-warning">Rs. {{ number_format($totalPending, 2) }}</h5>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                                 <td class="small">{{ $payment->order?->customer?->name ?? '—' }}</td>
                                 <td class="small">{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td class="small text-muted">{{ $payment->transaction_id ?? '—' }}</td>
-                                <td class="small">${{ number_format($payment->amount, 2) }}</td>
+                                <td class="small">Rs. {{ number_format($payment->amount, 2) }}</td>
                                 <td>
                                     <span class="badge {{ match($payment->status) { 'paid' => 'bg-success', 'refunded' => 'bg-info text-dark', 'failed' => 'bg-danger', default => 'bg-warning text-dark' } }}">
                                         {{ ucfirst($payment->status) }}

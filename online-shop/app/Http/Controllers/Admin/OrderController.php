@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Notifications\OrderStatusNotification;
 use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
@@ -26,7 +27,18 @@ class OrderController extends Controller
 
         if ($request->filled('search')) {
             $search = trim($request->search);
-            $query->where('order_number', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($cq) use ($search) {
+                        $cq->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $orders = $query->orderByDesc('created_at')->paginate(15)->withQueryString();
@@ -38,13 +50,31 @@ class OrderController extends Controller
     {
         $order->load(['customer', 'items.product.category', 'payment']);
 
-        return view('admin.orders.show', compact('order'));
+        $customer = $order->customer;
+
+        $customerStats = null;
+        if ($customer) {
+            $customerStats = [
+                'total_orders' => Order::where('customer_id', $customer->id)->count(),
+                'total_spent' => (float) Order::where('customer_id', $customer->id)
+                    ->where('order_status', '!=', Order::ORDER_CANCELLED)
+                    ->sum('total_amount'),
+                'pending_orders' => Order::where('customer_id', $customer->id)
+                    ->where('order_status', Order::ORDER_PENDING)
+                    ->count(),
+                'joined' => $customer->created_at,
+                'status' => $customer->status,
+                'last_order' => Order::where('customer_id', $customer->id)->latest('created_at')->first(),
+            ];
+        }
+
+        return view('admin.orders.show', compact('order', 'customerStats'));
     }
 
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
         $request->validate([
-            'order_status' => ['required', 'in:' . implode(',', Order::ORDER_STATUSES)],
+            'order_status' => ['required', 'in:'.implode(',', Order::ORDER_STATUSES)],
         ]);
 
         if ($order->isCancelled()) {
@@ -60,9 +90,9 @@ class OrderController extends Controller
         if ($newStatus === Order::ORDER_DELIVERED && $order->payment_status === Order::PAYMENT_PENDING) {
             $order->update(['payment_status' => Order::PAYMENT_PAID]);
             $order->payment()?->update([
-                'status' => \App\Models\Payment::STATUS_PAID,
+                'status' => Payment::STATUS_PAID,
                 'paid_at' => now(),
-                'transaction_id' => $order->payment?->transaction_id ?? 'COD-' . strtoupper(substr(md5($order->id . now()), 0, 12)),
+                'transaction_id' => $order->payment?->transaction_id ?? 'COD-'.strtoupper(substr(md5($order->id.now()), 0, 12)),
             ]);
         }
 
@@ -84,10 +114,10 @@ class OrderController extends Controller
         if ($order->payment) {
             $order->payment()->update([
                 'status' => match ($request->payment_status) {
-                    Order::PAYMENT_PAID => \App\Models\Payment::STATUS_PAID,
-                    Order::PAYMENT_REFUNDED => \App\Models\Payment::STATUS_REFUNDED,
-                    Order::PAYMENT_FAILED => \App\Models\Payment::STATUS_FAILED,
-                    default => \App\Models\Payment::STATUS_PENDING,
+                    Order::PAYMENT_PAID => Payment::STATUS_PAID,
+                    Order::PAYMENT_REFUNDED => Payment::STATUS_REFUNDED,
+                    Order::PAYMENT_FAILED => Payment::STATUS_FAILED,
+                    default => Payment::STATUS_PENDING,
                 },
                 'paid_at' => $request->payment_status === Order::PAYMENT_PAID ? now() : $order->payment->paid_at,
             ]);

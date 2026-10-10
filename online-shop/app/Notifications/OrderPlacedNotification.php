@@ -16,7 +16,7 @@ class OrderPlacedNotification
             $order->customer_id,
             'order',
             "Order {$order->order_number} placed",
-            "Your order worth \${$order->total_amount} has been placed successfully. It is now pending confirmation.",
+            "Your order worth Rs. " . number_format($order->total_amount, 2) . " has been placed successfully. It is now pending confirmation.",
             route('orders.show', $order->id),
         );
     }

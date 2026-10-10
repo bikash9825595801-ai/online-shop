@@ -70,9 +70,9 @@
                                 <td class="small">{{ $product->seller->name }}</td>
                                 <td class="small">{{ $product->category->name }}</td>
                                 <td class="small">
-                                    ${{ number_format($product->sellingPrice(), 2) }}
+                                    Rs. {{ number_format($product->sellingPrice(), 2) }}
                                     @if ($product->hasDiscount())
-                                        <span class="old-price">${{ number_format($product->price, 2) }}</span>
+                                        <span class="old-price">Rs. {{ number_format($product->price, 2) }}</span>
                                     @endif
                                 </td>
                                 <td>

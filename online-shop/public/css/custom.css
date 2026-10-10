@@ -121,6 +121,34 @@ body {
     height: 220px;
     object-fit: cover;
     background: #fff;
+    transition: transform .35s ease;
+}
+
+.product-media .product-image {
+    height: 220px;
+    object-fit: cover;
+}
+
+.product-media img.product-image:hover {
+    transform: scale(1.06);
+}
+
+.product-quick-add {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.product-media:hover .product-quick-add {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.product-quick-add .btn-brand {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .18);
 }
 
 .discount-badge {

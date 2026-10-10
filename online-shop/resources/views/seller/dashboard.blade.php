@@ -24,7 +24,7 @@
             <div class="stat-card stat-green">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stat-value">${{ number_format($revenue, 2) }}</div>
+                        <div class="stat-value">Rs. {{ number_format($revenue, 2) }}</div>
                         <div class="stat-label">Revenue</div>
                     </div>
                     <i class="bi bi-cash-stack stat-icon"></i>
@@ -125,7 +125,7 @@
                                 @forelse ($recentOrders as $order)
                                     <tr>
                                         <td class="small"><a href="{{ route('seller.orders.show', $order->id) }}" class="text-decoration-none">{{ $order->order_number }}</a></td>
-                                        <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                         <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                                     </tr>
                                 @empty

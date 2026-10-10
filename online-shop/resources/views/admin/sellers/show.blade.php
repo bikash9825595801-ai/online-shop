@@ -32,7 +32,7 @@
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card stat-purple">
-                <div class="stat-value">${{ number_format($revenue, 2) }}</div>
+                <div class="stat-value">Rs. {{ number_format($revenue, 2) }}</div>
                 <div class="stat-label">Revenue</div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                             <tr>
                                 <td class="small fw-semibold">{{ $product->name }}</td>
                                 <td class="small">{{ $product->category->name }}</td>
-                                <td class="small">${{ number_format($product->sellingPrice(), 2) }}</td>
+                                <td class="small">Rs. {{ number_format($product->sellingPrice(), 2) }}</td>
                                 <td class="small">{{ $product->stock }}</td>
                                 <td>
                                     <span class="badge {{ match($product->approval_status) { 'approved' => 'bg-success', 'pending' => 'bg-warning text-dark', 'rejected' => 'bg-danger', default => 'bg-secondary' } }}">

@@ -23,6 +23,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -30,7 +31,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Seller\DashboardController as SellerDashboardController;
 use App\Http\Controllers\Seller\InventoryController as SellerInventoryController;
-use App\Http\Controllers\Seller\MessageController;
+use App\Http\Controllers\Seller\MessageController as SellerMessageController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\Seller\ProfileController as SellerProfileController;
@@ -97,6 +98,12 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     // Profile (shared)
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Direct messages (customer <-> seller)
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{conversation}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{conversation}', [MessageController::class, 'send'])->name('messages.send');
+    Route::post('/messages/start/{seller}', [MessageController::class, 'start'])->name('messages.start');
 
     // Customer dashboard & shopping
     Route::middleware('role:customer')->group(function () {
@@ -212,7 +219,7 @@ Route::prefix('seller')->name('seller.')->middleware(['auth', 'user.active', 'ro
 
     Route::get('/reports', [SellerReportController::class, 'index'])->name('reports.index');
 
-    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages', [SellerMessageController::class, 'index'])->name('messages.index');
 
     Route::get('/profile', [SellerProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [SellerProfileController::class, 'update'])->name('profile.update');

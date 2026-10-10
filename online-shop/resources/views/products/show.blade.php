@@ -39,9 +39,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <span class="fs-3 fw-bold text-brand">${{ number_format($product->sellingPrice(), 2) }}</span>
+                    <span class="fs-3 fw-bold text-brand">Rs. {{ number_format($product->sellingPrice(), 2) }}</span>
                     @if ($product->hasDiscount())
-                        <span class="old-price fs-5 ms-2">${{ number_format($product->price, 2) }}</span>
+                        <span class="old-price fs-5 ms-2">Rs. {{ number_format($product->price, 2) }}</span>
                         <span class="badge bg-danger ms-2">-{{ $product->discountPercent() }}%</span>
                     @endif
                 </div>
@@ -158,9 +158,9 @@
                                 <div class="flex-grow-1">
                                     <a href="{{ route('products.show', $relatedProduct->slug) }}" class="text-decoration-none text-dark small fw-semibold">{{ $relatedProduct->name }}</a>
                                     <div class="small">
-                                        <span class="fw-bold text-brand">${{ number_format($relatedProduct->sellingPrice(), 2) }}</span>
+                                        <span class="fw-bold text-brand">Rs. {{ number_format($relatedProduct->sellingPrice(), 2) }}</span>
                                         @if ($relatedProduct->hasDiscount())
-                                            <span class="old-price">${{ number_format($relatedProduct->price, 2) }}</span>
+                                            <span class="old-price">Rs. {{ number_format($relatedProduct->price, 2) }}</span>
                                         @endif
                                     </div>
                                 </div>

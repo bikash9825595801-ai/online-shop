@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             $cartSubtotal = 0;
             $wishlistCount = 0;
             $unreadCount = 0;
+            $messageCount = 0;
             $notifications = collect();
 
             if ($user) {
@@ -39,9 +40,10 @@ class AppServiceProvider extends ServiceProvider
                 $wishlistCount = $user->wishlist?->items()->count() ?? 0;
                 $unreadCount = $user->notifications()->where('is_read', false)->count();
                 $notifications = $user->notifications()->latest()->limit(8)->get();
+                $messageCount = $user->unreadMessageCount();
             }
 
-            $view->with(compact('cartCount', 'cartSubtotal', 'wishlistCount', 'unreadCount', 'notifications'));
+            $view->with(compact('cartCount', 'cartSubtotal', 'wishlistCount', 'unreadCount', 'messageCount', 'notifications'));
         });
 
         // Open complaints count for the admin sidebar badge.

@@ -57,7 +57,7 @@
             <div class="stat-card stat-green">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stat-value">${{ number_format($totalRevenue, 2) }}</div>
+                        <div class="stat-value">Rs. {{ number_format($totalRevenue, 2) }}</div>
                         <div class="stat-label">Total Revenue</div>
                     </div>
                     <i class="bi bi-cash-stack stat-icon"></i>
@@ -125,7 +125,7 @@
                                 <tr>
                                     <td class="small">{{ $product->name }}</td>
                                     <td class="text-center small">{{ $product->total_qty }}</td>
-                                    <td class="text-end small">${{ number_format($product->revenue, 2) }}</td>
+                                    <td class="text-end small">Rs. {{ number_format($product->revenue, 2) }}</td>
                                 </tr>
                             @empty
                                 <tr><td colspan="3" class="text-center text-muted py-3">No sales data.</td></tr>
@@ -161,7 +161,7 @@
                                     <tr>
                                         <td class="small fw-semibold">{{ $order->order_number }}</td>
                                         <td class="small">{{ $order->customer->name }}</td>
-                                        <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                         <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                                         <td><a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-outline-brand">View</a></td>
                                     </tr>

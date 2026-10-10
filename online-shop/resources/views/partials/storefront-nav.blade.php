@@ -37,6 +37,20 @@
                                 @endif
                             </a>
                         </li>
+                    @endif
+
+                    @if (auth()->user()->isCustomer() || auth()->user()->isSeller())
+                        <li class="nav-item">
+                            <a class="nav-icon d-inline-flex align-items-center mx-2" href="{{ route('messages.index') }}" title="Messages">
+                                <i class="bi bi-chat-dots"></i>
+                                @if (isset($messageCount) && $messageCount > 0)
+                                    <span class="nav-badge">{{ $messageCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (auth()->user()->isCustomer())
                         <li class="nav-item">
                             <a class="nav-icon d-inline-flex align-items-center mx-2" href="{{ route('cart.index') }}" title="Cart">
                                 <i class="bi bi-cart3"></i>
@@ -64,6 +78,7 @@
                             @else
                                 <li><a class="dropdown-item" href="{{ route('customer.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>My Dashboard</a></li>
                                 <li><a class="dropdown-item" href="{{ route('orders.index') }}"><i class="bi bi-receipt me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{{ route('messages.index') }}"><i class="bi bi-chat-dots me-2"></i>Messages</a></li>
                                 <li><a class="dropdown-item" href="{{ route('wishlist.index') }}"><i class="bi bi-heart me-2"></i>Wishlist</a></li>
                                 <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
                             @endif

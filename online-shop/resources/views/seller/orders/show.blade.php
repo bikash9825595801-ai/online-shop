@@ -41,15 +41,15 @@
                                             </div>
                                         </td>
                                         <td class="text-center small">{{ $item->quantity }}</td>
-                                        <td class="text-center small">${{ number_format($item->price, 2) }}</td>
-                                        <td class="text-end small fw-semibold">${{ number_format($item->subtotal, 2) }}</td>
+                                        <td class="text-center small">Rs. {{ number_format($item->price, 2) }}</td>
+                                        <td class="text-end small fw-semibold">Rs. {{ number_format($item->subtotal, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="bg-light">
                                 <tr>
                                     <td colspan="3" class="text-end small fw-semibold">Your total</td>
-                                    <td class="text-end fw-bold">${{ number_format($order->items->sum('subtotal'), 2) }}</td>
+                                    <td class="text-end fw-bold">Rs. {{ number_format($order->items->sum('subtotal'), 2) }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -60,7 +60,17 @@
 
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">Customer</div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Customer</span>
+                    @if ($order->customer)
+                        <form action="{{ route('messages.start', $order->customer->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-brand">
+                                <i class="bi bi-chat-dots me-1"></i> Message Customer
+                            </button>
+                        </form>
+                    @endif
+                </div>
                 <div class="card-body">
                     <p class="mb-1"><strong>{{ $order->customer->name ?? $order->customer_name }}</strong></p>
                     @if ($order->customer)
@@ -68,8 +78,26 @@
                     @endif
                     <p class="mb-0 small"><strong>Phone:</strong> {{ $order->phone ?? '—' }}</p>
                     <p class="mb-0 small"><strong>Shipping Address:</strong><br>{{ $order->shipping_address }}</p>
+
+                    @if ($conversation && $conversation->messages()->exists())
+                        <a href="{{ route('messages.show', $conversation->id) }}" class="btn btn-brand btn-sm w-100 mt-3">
+                            <i class="bi bi-chat-dots me-1"></i>
+                            {{ $conversation->unreadCountFor(auth()->id()) > 0 ? 'View messages (' . $conversation->unreadCountFor(auth()->id()) . ' unread)' : 'Open conversation' }}
+                        </a>
+                    @endif
                 </div>
             </div>
+
+            @if ($order->notes)
+                <div class="card mt-3 border-warning">
+                    <div class="card-header bg-warning-subtle text-warning-emphasis">
+                        <i class="bi bi-sticky me-1"></i> Customer Notes
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-0" style="white-space:pre-wrap">{{ $order->notes }}</p>
+                    </div>
+                </div>
+            @endif
 
             <div class="card mt-3">
                 <div class="card-header">Payment</div>

@@ -47,7 +47,7 @@
                                     <tr>
                                         <td class="small fw-semibold">{{ $order->order_number }}</td>
                                         <td class="small">{{ $order->created_at->format('M d, Y') }}</td>
-                                        <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                         <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                                     </tr>
                                 @empty
@@ -77,7 +77,7 @@
                                     @forelse ($user->products()->latest()->limit(10)->get() as $product)
                                         <tr>
                                             <td class="small">{{ $product->name }}</td>
-                                            <td class="small">${{ number_format($product->sellingPrice(), 2) }}</td>
+                                            <td class="small">Rs. {{ number_format($product->sellingPrice(), 2) }}</td>
                                             <td class="small">{{ $product->stock }}</td>
                                             <td>
                                                 <span class="badge {{ match($product->approval_status) { 'approved' => 'bg-success', 'pending' => 'bg-warning text-dark', 'rejected' => 'bg-danger', default => 'bg-secondary' } }}">

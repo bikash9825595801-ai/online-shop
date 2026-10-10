@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Conversation;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Notifications\OrderStatusNotification;
 use App\Services\AuditService;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,7 @@ class OrderController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('order_number', 'like', '%' . trim($request->search) . '%');
+            $query->where('order_number', 'like', '%'.trim($request->search).'%');
         }
 
         $orders = $query->orderByDesc('created_at')->paginate(12)->withQueryString();
@@ -42,7 +43,11 @@ class OrderController extends Controller
             'items' => fn ($q) => $q->where('seller_id', Auth::id())->with('product'),
         ]);
 
-        return view('seller.orders.show', compact('order'));
+        $conversation = Conversation::where('customer_id', $order->customer_id)
+            ->where('seller_id', Auth::id())
+            ->first();
+
+        return view('seller.orders.show', compact('order', 'conversation'));
     }
 
     public function updateStatus(Request $request, Order $order): RedirectResponse
@@ -50,7 +55,7 @@ class OrderController extends Controller
         abort_unless($order->items()->where('seller_id', Auth::id())->exists(), 403);
 
         $request->validate([
-            'order_status' => ['required', 'in:' . implode(',', Order::ORDER_STATUSES)],
+            'order_status' => ['required', 'in:'.implode(',', Order::ORDER_STATUSES)],
         ]);
 
         if ($order->isCancelled()) {
@@ -66,9 +71,9 @@ class OrderController extends Controller
             $order->update(['payment_status' => Order::PAYMENT_PAID]);
             if ($order->payment) {
                 $order->payment()->update([
-                    'status' => \App\Models\Payment::STATUS_PAID,
+                    'status' => Payment::STATUS_PAID,
                     'paid_at' => now(),
-                    'transaction_id' => $order->payment->transaction_id ?? 'COD-' . strtoupper(substr(md5($order->id . now()), 0, 12)),
+                    'transaction_id' => $order->payment->transaction_id ?? 'COD-'.strtoupper(substr(md5($order->id.now()), 0, 12)),
                 ]);
             }
         }

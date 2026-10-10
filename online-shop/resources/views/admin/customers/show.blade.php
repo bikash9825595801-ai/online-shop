@@ -17,7 +17,7 @@
         </div>
         <div class="col-6 col-md-4">
             <div class="stat-card stat-green">
-                <div class="stat-value">${{ number_format($totalSpent, 2) }}</div>
+                <div class="stat-value">Rs. {{ number_format($totalSpent, 2) }}</div>
                 <div class="stat-label">Total Spent</div>
             </div>
         </div>
@@ -62,9 +62,9 @@
                     <tbody>
                         @forelse ($customer->orders as $order)
                             <tr>
-                                <td class="small fw-semibold">{{ $order->order_number }}</td>
+                                <td class="small fw-semibold"><a href="{{ route('admin.orders.show', $order->id) }}" class="text-decoration-none">{{ $order->order_number }}</a></td>
                                 <td class="small">{{ $order->created_at->format('M d, Y') }}</td>
-                                <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                 <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                             </tr>
                         @empty

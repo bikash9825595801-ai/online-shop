@@ -48,3 +48,17 @@ if (! function_exists('payment_status_badge')) {
         };
     }
 }
+
+if (! function_exists('api_response')) {
+    /**
+     * Standard JSON envelope used by the mobile API.
+     */
+    function api_response(bool $success, string $message, mixed $data = null, int $status = 200): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+            'data' => $data,
+        ], $status);
+    }
+}

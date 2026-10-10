@@ -32,7 +32,7 @@
             <div class="stat-card stat-green">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stat-value">${{ number_format($totalSpent, 2) }}</div>
+                        <div class="stat-value">Rs. {{ number_format($totalSpent, 2) }}</div>
                         <div class="stat-label">Total Spent</div>
                     </div>
                     <i class="bi bi-cash-stack stat-icon"></i>
@@ -76,7 +76,7 @@
                                     <tr>
                                         <td class="small fw-semibold">{{ $order->order_number }}</td>
                                         <td class="small">{{ $order->created_at->format('M d, Y') }}</td>
-                                        <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                         <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                                         <td><a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-brand">View</a></td>
                                     </tr>

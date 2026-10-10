@@ -76,7 +76,7 @@ class ProductSeeder extends Seeder
                 'stock' => $stock,
                 'sku' => 'SKU-' . strtoupper(Str::random(8)),
                 'brand' => $brand,
-                'image' => 'https://picsum.photos/seed/product' . $index . '/600/400',
+                'image' => config('product-images.' . $name) ?? 'https://picsum.photos/seed/product' . $index . '/600/400',
                 'status' => Product::STATUS_ACTIVE,
                 'approval_status' => $approval,
             ]);

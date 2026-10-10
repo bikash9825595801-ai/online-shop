@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
+use App\Models\Conversation;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -59,11 +60,17 @@ class CheckoutController extends Controller
 
                 $order = Order::create([
                     'customer_id' => Auth::id(),
-                    'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(8)),
+                    'order_number' => 'ORD-'.date('Ymd').'-'.strtoupper(Str::random(8)),
                     'total_amount' => round($total, 2),
                     'shipping_address' => $request->shipping_address,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'postal_code' => $request->postal_code,
+                    'country' => $request->country,
+                    'notes' => $request->notes,
                     'phone' => $request->phone,
                     'customer_name' => $request->name,
+                    'customer_email' => $request->email,
                     'payment_status' => Order::PAYMENT_PENDING,
                     'order_status' => Order::ORDER_PENDING,
                 ]);
@@ -106,9 +113,27 @@ class CheckoutController extends Controller
             NewOrderForSellerNotification::send($orderItem);
         }
 
-        AuditService::log('Order placed', 'Orders', "Order {$order->order_number} placed for $" . number_format($order->total_amount, 2));
+        // Open a direct conversation with every seller in this order and put the
+        // customer's message (order notes) right next to them.
+        $sellerIds = $order->items->pluck('seller_id')->unique()->filter();
+        foreach ($sellerIds as $sellerId) {
+            $conversation = Conversation::firstOrCreate(
+                ['customer_id' => Auth::id(), 'seller_id' => $sellerId],
+                ['order_id' => $order->id, 'last_message_at' => now()],
+            );
+
+            if ($request->filled('notes')) {
+                $conversation->messages()->create([
+                    'sender_id' => Auth::id(),
+                    'message' => 'Order notes for '.$order->order_number.":\n".trim($request->notes),
+                ]);
+                $conversation->update(['last_message_at' => now()]);
+            }
+        }
+
+        AuditService::log('Order placed', 'Orders', "Order {$order->order_number} placed for $".number_format($order->total_amount, 2));
 
         return redirect()->route('orders.show', $order->id)
-            ->with('success', "Your order {$order->order_number} has been placed successfully. Pay \$" . number_format($order->total_amount, 2) . ' on delivery.');
+            ->with('success', "Your order {$order->order_number} has been placed successfully. Pay Rs. ".number_format($order->total_amount, 2).' on delivery.');
     }
 }

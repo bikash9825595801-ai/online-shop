@@ -12,7 +12,7 @@
         <div class="card-body">
             <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-2 mb-3">
                 <div class="col-md-4">
-                    <input type="search" name="search" class="form-control" placeholder="Search by order number..." value="{{ request('search') }}">
+                    <input type="search" name="search" class="form-control" placeholder="Search order #, name, phone, email, city..." value="{{ request('search') }}">
                 </div>
                 <div class="col-md-3">
                     <select name="status" class="form-select">
@@ -54,14 +54,12 @@
                             <tr>
                                 <td class="small fw-semibold">{{ $order->order_number }}</td>
                                 <td class="small">
-                                    @if ($order->customer)
-                                        {{ $order->customer->name }}
-                                    @else
-                                        <span class="text-muted">{{ $order->customer_name }}</span>
-                                    @endif
+                                    <div class="fw-semibold">{{ $order->customerName() }}</div>
+                                    <div class="text-muted" style="font-size:.72rem">{{ $order->customerEmail() }}</div>
+                                    <div class="text-muted" style="font-size:.72rem">{{ $order->phone ?? '—' }}</div>
                                 </td>
                                 <td class="small">{{ $order->items_count ?? $order->items->sum('quantity') }}</td>
-                                <td class="small">${{ number_format($order->total_amount, 2) }}</td>
+                                <td class="small">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                 <td>
                                     <span class="badge {{ match($order->order_status) { 'delivered' => 'bg-success', 'cancelled' => 'bg-danger', 'pending' => 'bg-warning text-dark', 'shipped' => 'bg-info text-dark', default => 'bg-secondary' } }}">
                                         {{ ucfirst($order->order_status) }}

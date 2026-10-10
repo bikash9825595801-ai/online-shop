@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted small">Stock Value</div>
-                    <h5 class="mb-0">${{ number_format($totalValue, 2) }}</h5>
+                    <h5 class="mb-0">Rs. {{ number_format($totalValue, 2) }}</h5>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                                 <td>
                                     <span class="badge {{ $product->stock <= 0 ? 'bg-danger' : ($product->stock <= $threshold ? 'bg-warning text-dark' : 'bg-success') }}">{{ $product->stock }}</span>
                                 </td>
-                                <td class="small">${{ number_format($product->stock * $product->sellingPrice(), 2) }}</td>
+                                <td class="small">Rs. {{ number_format($product->stock * $product->sellingPrice(), 2) }}</td>
                                 <td class="small text-muted">{{ $product->category->name }}</td>
                                 <td class="text-end">
                                     <form action="{{ route('seller.inventory.stock', $product->id) }}" method="POST" class="d-flex justify-content-end gap-1">

@@ -46,7 +46,7 @@
                                 <td class="small fw-semibold">{{ $order->order_number }}</td>
                                 <td class="small">{{ $order->customer->name ?? $order->customer_name }}</td>
                                 <td class="small">{{ $order->items->sum('quantity') }}</td>
-                                <td class="small">${{ number_format($order->items->sum('subtotal'), 2) }}</td>
+                                <td class="small">Rs. {{ number_format($order->items->sum('subtotal'), 2) }}</td>
                                 <td><span class="badge {{ order_status_badge($order->order_status) }}">{{ ucfirst($order->order_status) }}</span></td>
                                 <td class="small text-muted">{{ $order->created_at->format('M d, Y') }}</td>
                                 <td class="text-end">

@@ -55,9 +55,9 @@
                             <div class="mb-3">
                                 <label class="form-label small fw-semibold">Price range</label>
                                 <div class="input-group input-group-sm mb-2">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">Rs.</span>
                                     <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request('min_price') }}" min="0">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">Rs.</span>
                                     <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request('max_price') }}" min="0">
                                 </div>
                             </div>

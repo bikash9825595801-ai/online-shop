@@ -56,7 +56,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-center">${{ number_format($item->product->sellingPrice(), 2) }}</td>
+                                                <td class="text-center">Rs. {{ number_format($item->product->sellingPrice(), 2) }}</td>
                                                 <td class="text-center" style="width:130px">
                                                     <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-inline-flex align-items-center gap-1">
                                                         @csrf
@@ -66,7 +66,7 @@
                                                         <button type="button" class="btn btn-sm btn-outline-secondary btn-inc" {{ $item->quantity >= $item->product->stock ? 'disabled' : '' }}>+</button>
                                                     </form>
                                                 </td>
-                                                <td class="text-end fw-semibold">${{ number_format($item->lineTotal(), 2) }}</td>
+                                                <td class="text-end fw-semibold">Rs. {{ number_format($item->lineTotal(), 2) }}</td>
                                                 <td class="text-end">
                                                     <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
                                                         @csrf
@@ -91,7 +91,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Subtotal</span>
-                                <strong>${{ number_format($cart->subtotal(), 2) }}</strong>
+                                <strong>Rs. {{ number_format($cart->subtotal(), 2) }}</strong>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Shipping</span>
@@ -100,7 +100,7 @@
                             <hr>
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="fw-semibold">Total</span>
-                                <span class="fw-bold fs-5 text-brand">${{ number_format($cart->total(), 2) }}</span>
+                                <span class="fw-bold fs-5 text-brand">Rs. {{ number_format($cart->total(), 2) }}</span>
                             </div>
                             <a href="{{ route('checkout.index') }}" class="btn btn-brand w-100">
                                 <i class="bi bi-credit-card me-1"></i> Proceed to Checkout

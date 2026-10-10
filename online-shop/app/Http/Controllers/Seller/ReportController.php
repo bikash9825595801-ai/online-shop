@@ -48,8 +48,8 @@ class ReportController extends Controller
         $periodItems = $sales->sum('items');
         $periodAvgOrder = $periodOrders > 0 ? $periodRevenue / $periodOrders : 0;
 
-        $productWise = OrderItem::where('seller_id', $sellerId)
-            ->where('created_at', '>=', $from)
+        $productWise = OrderItem::where('order_items.seller_id', $sellerId)
+            ->where('order_items.created_at', '>=', $from)
             ->whereHas('order', fn ($q) => $q->where('order_status', '!=', Order::ORDER_CANCELLED))
             ->join('products', 'products.id', '=', 'order_items.product_id')
             ->select('products.name', DB::raw('SUM(order_items.quantity) as total_qty'), DB::raw('SUM(order_items.subtotal) as revenue'))

@@ -44,9 +44,9 @@
                                     <h6 class="fw-semibold mb-1">{{ $item->product->name }}</h6>
                                 </a>
                                 <div class="mb-2">
-                                    <span class="fw-bold text-brand">${{ number_format($item->product->sellingPrice(), 2) }}</span>
+                                    <span class="fw-bold text-brand">Rs. {{ number_format($item->product->sellingPrice(), 2) }}</span>
                                     @if ($item->product->hasDiscount())
-                                        <span class="old-price">${{ number_format($item->product->price, 2) }}</span>
+                                        <span class="old-price">Rs. {{ number_format($item->product->price, 2) }}</span>
                                     @endif
                                 </div>
                                 <div class="mt-auto d-flex flex-column gap-1">

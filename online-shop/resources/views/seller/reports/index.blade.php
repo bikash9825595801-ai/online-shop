@@ -18,7 +18,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted small">Revenue</div>
-                    <h5 class="mb-0">${{ number_format($periodRevenue, 2) }}</h5>
+                    <h5 class="mb-0">Rs. {{ number_format($periodRevenue, 2) }}</h5>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted small">Avg. Order Value</div>
-                    <h5 class="mb-0">${{ number_format($periodAvgOrder, 2) }}</h5>
+                    <h5 class="mb-0">Rs. {{ number_format($periodAvgOrder, 2) }}</h5>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                             <tr>
                                 <td class="small">{{ $item->name }}</td>
                                 <td class="text-center small">{{ $item->total_qty }}</td>
-                                <td class="text-end small">${{ number_format($item->revenue, 2) }}</td>
+                                <td class="text-end small">Rs. {{ number_format($item->revenue, 2) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="3" class="text-center text-muted py-4">No sales in this period.</td></tr>

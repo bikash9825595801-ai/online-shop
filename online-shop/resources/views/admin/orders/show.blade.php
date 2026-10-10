@@ -48,15 +48,15 @@
                                         </td>
                                         <td class="small text-muted">{{ $item->seller->name ?? '—' }}</td>
                                         <td class="text-center small">{{ $item->quantity }}</td>
-                                        <td class="text-center small">${{ number_format($item->price, 2) }}</td>
-                                        <td class="text-end small fw-semibold">${{ number_format($item->subtotal, 2) }}</td>
+                                        <td class="text-center small">Rs. {{ number_format($item->price, 2) }}</td>
+                                        <td class="text-end small fw-semibold">Rs. {{ number_format($item->subtotal, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="bg-light">
                                 <tr>
                                     <td colspan="4" class="text-end small fw-semibold">Total</td>
-                                    <td class="text-end fw-bold">${{ number_format($order->total_amount, 2) }}</td>
+                                    <td class="text-end fw-bold">Rs. {{ number_format($order->total_amount, 2) }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -66,15 +66,101 @@
         </div>
 
         <div class="col-lg-4">
+            {{-- ============ FULL CUSTOMER DETAIL ============ --}}
             <div class="card">
-                <div class="card-header">Customer</div>
-                <div class="card-body">
-                    <p class="mb-1"><strong>{{ $order->customer->name ?? $order->customer_name }}</strong></p>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-person-vcard me-1"></i> Customer Details</span>
                     @if ($order->customer)
-                        <p class="mb-1 small text-muted">{{ $order->customer->email }}</p>
+                        <a href="{{ route('admin.customers.show', $order->customer->id) }}" class="btn btn-sm btn-outline-brand" title="View full profile">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
                     @endif
-                    <p class="mb-0 small"><strong>Phone:</strong> {{ $order->phone ?? '—' }}</p>
-                    <p class="mb-0 small"><strong>Shipping Address:</strong><br>{{ $order->shipping_address }}</p>
+                </div>
+                <div class="card-body">
+                    {{-- Identity --}}
+                    <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                        <div class="bg-soft-brand text-brand rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;font-size:1.2rem;font-weight:700">
+                            {{ strtoupper(substr($order->customerName(), 0, 1)) }}
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <strong class="d-block text-truncate">{{ $order->customerName() }}</strong>
+                            <small class="text-muted d-block text-truncate">{{ $order->customerEmail() }}</small>
+                        </div>
+                        @if ($order->customer)
+                            <span class="badge {{ $order->customer->isActive() ? 'bg-success' : 'bg-secondary' }}">
+                                {{ ucfirst($order->customer->status) }}
+                            </span>
+                        @else
+                            <span class="badge bg-secondary">Deleted</span>
+                        @endif
+                    </div>
+
+                    @if ($order->customer && $order->customer->name !== $order->customer_name)
+                        <div class="alert alert-secondary py-2 px-3 small mb-3">
+                            <i class="bi bi-person me-1"></i><strong>Account name:</strong> {{ $order->customer->name }}
+                        </div>
+                    @endif
+
+                    {{-- Contact --}}
+                    <h6 class="text-uppercase text-muted fs-6 mb-2" style="letter-spacing:.05em">Contact</h6>
+                    <p class="mb-1 small"><i class="bi bi-telephone text-brand me-2"></i>{{ $order->phone ?? '—' }}</p>
+                    <p class="mb-1 small"><i class="bi bi-envelope text-brand me-2"></i>{{ $order->customerEmail() }}</p>
+                    @if ($order->customer?->phone && $order->customer->phone !== $order->phone)
+                        <p class="mb-3 small text-muted"><i class="bi bi-person me-2"></i>Account phone: {{ $order->customer->phone }}</p>
+                    @else
+                        <div class="mb-3"></div>
+                    @endif
+
+                    {{-- Address --}}
+                    <h6 class="text-uppercase text-muted fs-6 mb-2" style="letter-spacing:.05em">Shipping Address</h6>
+                    <p class="mb-1 small">{{ $order->shipping_address }}</p>
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                        @if ($order->city)<span class="badge bg-light text-dark border">{{ $order->city }}</span>@endif
+                        @if ($order->state)<span class="badge bg-light text-dark border">{{ $order->state }}</span>@endif
+                        @if ($order->postal_code)<span class="badge bg-light text-dark border">{{ $order->postal_code }}</span>@endif
+                        @if ($order->country)<span class="badge bg-light text-dark border">{{ $order->country }}</span>@endif
+                    </div>
+
+                    @if ($order->customer?->address && $order->customer->address !== $order->shipping_address)
+                        <div class="alert alert-secondary py-2 px-3 small mb-3">
+                            <strong>Account address:</strong> {{ $order->customer->address }}
+                        </div>
+                    @endif
+
+                    @if ($order->notes)
+                        <h6 class="text-uppercase text-muted fs-6 mb-2" style="letter-spacing:.05em">Customer Notes</h6>
+                        <div class="alert alert-warning py-2 px-3 small mb-3">
+                            <i class="bi bi-sticky me-1"></i>{{ $order->notes }}
+                        </div>
+                    @endif
+
+                    {{-- Account stats --}}
+                    @if ($customerStats)
+                        <h6 class="text-uppercase text-muted fs-6 mb-2" style="letter-spacing:.05em">Account Summary</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center">
+                                    <div class="fw-bold text-brand">{{ $customerStats['total_orders'] }}</div>
+                                    <small class="text-muted" style="font-size:.7rem">Orders</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center">
+                                    <div class="fw-bold text-success">Rs. {{ number_format($customerStats['total_spent'], 0) }}</div>
+                                    <small class="text-muted" style="font-size:.7rem">Spent</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center">
+                                    <div class="fw-bold text-warning">{{ $customerStats['pending_orders'] }}</div>
+                                    <small class="text-muted" style="font-size:.7rem">Pending</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="mb-1 small text-muted"><i class="bi bi-calendar3 me-1"></i> Member since: {{ $customerStats['joined']->format('M d, Y') }}</p>
+                        <p class="mb-0 small text-muted"><i class="bi bi-clock-history me-1"></i> Last order: {{ $customerStats['last_order']?->created_at->format('M d, Y') ?? '—' }}</p>
+                    @endif
                 </div>
             </div>
 

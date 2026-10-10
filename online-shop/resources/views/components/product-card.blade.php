@@ -1,18 +1,30 @@
 @props(['product'])
 
 <div class="card product-card h-100">
-    <a href="{{ route('products.show', $product->slug) }}" class="position-relative d-block text-decoration-none">
-        @if ($product->hasDiscount())
-            <span class="discount-badge">-{{ $product->discountPercent() }}%</span>
+    <div class="product-media position-relative">
+        <a href="{{ route('products.show', $product->slug) }}" class="position-relative d-block text-decoration-none overflow-hidden">
+            @if ($product->hasDiscount())
+                <span class="discount-badge">-{{ $product->discountPercent() }}%</span>
+            @endif
+            @if ($product->image)
+                <img src="{{ product_image_url($product->image) }}" class="product-image w-100" alt="{{ $product->name }}" loading="lazy">
+            @else
+                <div class="product-image w-100 d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-image text-muted" style="font-size:3rem"></i>
+                </div>
+            @endif
+        </a>
+        @if ($product->stock > 0)
+            <form action="{{ route('cart.add') }}" method="POST" class="product-quick-add">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-brand btn-sm" title="Add to cart">
+                    <i class="bi bi-cart-plus me-1"></i> Quick Add
+                </button>
+            </form>
         @endif
-        @if ($product->image)
-            <img src="{{ product_image_url($product->image) }}" class="product-image w-100" alt="{{ $product->name }}">
-        @else
-            <div class="product-image w-100 d-flex align-items-center justify-content-center bg-light">
-                <i class="bi bi-image text-muted" style="font-size:3rem"></i>
-            </div>
-        @endif
-    </a>
+    </div>
     <div class="card-body d-flex flex-column">
         <small class="text-muted text-uppercase" style="font-size:.68rem">{{ $product->brand ?? $product->category->name }}</small>
         <a href="{{ route('products.show', $product->slug) }}" class="text-decoration-none text-dark">
@@ -28,9 +40,9 @@
         </div>
         <div class="mt-auto d-flex align-items-center justify-content-between">
             <div>
-                <span class="fw-bold text-brand fs-5">${{ number_format($product->sellingPrice(), 2) }}</span>
+                <span class="fw-bold text-brand fs-5">Rs. {{ number_format($product->sellingPrice(), 2) }}</span>
                 @if ($product->hasDiscount())
-                    <span class="old-price ms-1">${{ number_format($product->price, 2) }}</span>
+                    <span class="old-price ms-1">Rs. {{ number_format($product->price, 2) }}</span>
                 @endif
             </div>
             @if ($product->stock <= 0)

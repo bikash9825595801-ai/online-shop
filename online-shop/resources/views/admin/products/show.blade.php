@@ -29,8 +29,8 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><strong>Price:</strong> ${{ number_format($product->price, 2) }}</div>
-                        <div class="col-md-6"><strong>Discount Price:</strong> {{ $product->discount_price ? '$' . number_format($product->discount_price, 2) : '—' }}</div>
+                        <div class="col-md-6"><strong>Price:</strong> Rs. {{ number_format($product->price, 2) }}</div>
+                        <div class="col-md-6"><strong>Discount Price:</strong> {{ $product->discount_price ? 'Rs. ' . number_format($product->discount_price, 2) : '—' }}</div>
                         <div class="col-md-6 mt-2"><strong>Stock:</strong> {{ $product->stock }}</div>
                         <div class="col-md-6 mt-2"><strong>SKU:</strong> {{ $product->sku ?? '—' }}</div>
                         <div class="col-md-6 mt-2"><strong>Brand:</strong> {{ $product->brand ?? '—' }}</div>

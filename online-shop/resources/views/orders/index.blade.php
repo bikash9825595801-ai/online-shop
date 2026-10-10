@@ -40,7 +40,7 @@
                                     @endif
                                     <div class="small">
                                         <div class="fw-semibold">{{ $item->product->name }}</div>
-                                        <span class="text-muted">Qty: {{ $item->quantity }} &times; ${{ number_format($item->price, 2) }}</span>
+                                        <span class="text-muted">Qty: {{ $item->quantity }} &times; Rs. {{ number_format($item->price, 2) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@
 
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
-                        <strong>Total: <span class="text-brand">${{ number_format($order->total_amount, 2) }}</span></strong>
+                        <strong>Total: <span class="text-brand">Rs. {{ number_format($order->total_amount, 2) }}</span></strong>
                         <a href="{{ route('orders.show', $order->id) }}" class="btn btn-outline-brand btn-sm">View Details</a>
                     </div>
                 </div>

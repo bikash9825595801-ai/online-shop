@@ -65,11 +65,17 @@ class OrderSeeder extends Seeder
 
                 $order = Order::create([
                     'customer_id' => $customer->id,
-                    'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(8)),
+                    'order_number' => 'ORD-'.date('Ymd').'-'.strtoupper(Str::random(8)),
                     'total_amount' => round($total, 2),
                     'shipping_address' => $customer->address,
+                    'city' => fake()->city(),
+                    'state' => fake()->state(),
+                    'postal_code' => fake()->numerify('#####'),
+                    'country' => 'Nepal',
+                    'notes' => random_int(0, 3) === 0 ? fake()->sentence(8) : null,
                     'phone' => $customer->phone,
                     'customer_name' => $customer->name,
+                    'customer_email' => $customer->email,
                     'payment_status' => $paymentStatus,
                     'order_status' => $status,
                     'created_at' => $createdAt,
@@ -83,7 +89,7 @@ class OrderSeeder extends Seeder
                 Payment::create([
                     'order_id' => $order->id,
                     'payment_method' => 'cod',
-                    'transaction_id' => $paymentStatus === Order::PAYMENT_PAID ? 'TXN-' . strtoupper(Str::random(12)) : null,
+                    'transaction_id' => $paymentStatus === Order::PAYMENT_PAID ? 'TXN-'.strtoupper(Str::random(12)) : null,
                     'amount' => $order->total_amount,
                     'status' => $paymentStatus === Order::PAYMENT_PAID ? Payment::STATUS_PAID : Payment::STATUS_PENDING,
                     'paid_at' => $paymentStatus === Order::PAYMENT_PAID ? $createdAt->addDays(3) : null,

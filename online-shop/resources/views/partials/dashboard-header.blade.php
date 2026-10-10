@@ -9,6 +9,15 @@
             <i class="bi bi-house-door me-1"></i> Store
         </a>
 
+        @if (auth()->user()->isCustomer() || auth()->user()->isSeller())
+            <a href="{{ route('messages.index') }}" class="nav-icon d-inline-flex align-items-center" title="Messages">
+                <i class="bi bi-chat-dots fs-5"></i>
+                @if (isset($messageCount) && $messageCount > 0)
+                    <span class="nav-badge">{{ $messageCount }}</span>
+                @endif
+            </a>
+        @endif
+
         <div class="dropdown">
             <a href="#" class="nav-icon d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                 <i class="bi bi-bell fs-5"></i>

@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="small">{{ $customer->phone ?? '—' }}</td>
                                 <td><span class="badge bg-soft-brand text-brand">{{ $customer->orders_count }}</span></td>
-                                <td class="small fw-semibold">${{ number_format($customer->orders_sum_total_amount ?? 0, 2) }}</td>
+                                <td class="small fw-semibold">Rs. {{ number_format($customer->orders_sum_total_amount ?? 0, 2) }}</td>
                                 <td>
                                     <span class="badge {{ $customer->isActive() ? 'bg-success' : 'bg-danger' }}">{{ ucfirst($customer->status) }}</span>
                                 </td>

@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public const ROLE_ADMIN = 'admin';
+
     public const ROLE_SELLER = 'seller';
+
     public const ROLE_CUSTOMER = 'customer';
 
     public const STATUS_ACTIVE = 'active';
+
     public const STATUS_BLOCKED = 'blocked';
 
     protected $fillable = [
@@ -111,5 +115,32 @@ class User extends Authenticatable
     public function notifications(): HasMany
     {
         return $this->hasMany(UserNotification::class);
+    }
+
+    /** Conversations where this user is the customer. */
+    public function conversationsAsCustomer(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'customer_id');
+    }
+
+    /** Conversations where this user is the seller. */
+    public function conversationsAsSeller(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'seller_id');
+    }
+
+    /** Messages this user sent in conversations. */
+    public function conversationMessages(): HasMany
+    {
+        return $this->hasMany(ConversationMessage::class, 'sender_id');
+    }
+
+    /** Total unread conversation messages across all conversations for this user. */
+    public function unreadMessageCount(): int
+    {
+        return ConversationMessage::whereNull('read_at')
+            ->where('sender_id', '!=', $this->id)
+            ->whereHas('conversation', fn ($q) => $q->forUser($this->id))
+            ->count();
     }
 }
