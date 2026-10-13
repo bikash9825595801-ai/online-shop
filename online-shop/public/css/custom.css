@@ -374,3 +374,64 @@ body {
     position: sticky;
     top: 1rem;
 }
+
+/* ---------- Checkout payment options ---------- */
+.pay-option {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    border: 2px solid #e5e7eb;
+    border-radius: .85rem;
+    padding: .85rem 1rem;
+    cursor: pointer;
+    height: 100%;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    margin: 0;
+}
+
+.pay-option:hover {
+    border-color: #c7d2fe;
+    background: #f8faff;
+}
+
+.pay-option-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: .7rem;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.pay-option-body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+    flex: 1;
+}
+
+.pay-option-body strong { font-size: .95rem; color: #111827; }
+.pay-option-body small { color: #6b7280; font-size: .8rem; }
+
+.pay-option-check {
+    color: var(--brand);
+    font-size: 1.15rem;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.btn-check:checked + .pay-option {
+    border-color: var(--brand);
+    background: var(--brand-soft, #eef2ff);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, .12);
+}
+
+.btn-check:checked + .pay-option .pay-option-check { opacity: 1; }
+
+.btn-check:focus-visible + .pay-option {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+}

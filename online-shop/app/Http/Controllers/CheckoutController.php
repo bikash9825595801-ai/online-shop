@@ -25,7 +25,7 @@ class CheckoutController extends Controller
         $this->middleware('role:customer')->only('index', 'store');
     }
 
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         $cart = Auth::user()->cart()->with(['items.product.category'])->first();
 
@@ -33,7 +33,31 @@ class CheckoutController extends Controller
             return view('checkout.empty');
         }
 
-        return view('checkout.index', compact('cart'));
+        // Drop items that are no longer purchasable (unapproved, inactive or
+        // out of stock) so the customer is never bounced back by a stale row.
+        $unavailable = [];
+        foreach ($cart->items as $item) {
+            $product = $item->product;
+
+            if (! $product
+                || ! $product->isApproved()
+                || $product->status !== Product::STATUS_ACTIVE
+                || ! $product->inStock()) {
+                $unavailable[] = $product?->name ?? 'A product';
+                $item->delete();
+            }
+        }
+
+        if ($unavailable !== []) {
+            $cart->load('items.product.category');
+
+            if ($cart->items->isEmpty()) {
+                return redirect()->route('cart.index')
+                    ->with('warning', 'These items are no longer available and were removed from your cart: '.implode(', ', $unavailable).'.');
+            }
+        }
+
+        return view('checkout.index', compact('cart', 'unavailable'));
     }
 
     public function store(CheckoutRequest $request): RedirectResponse
@@ -47,10 +71,10 @@ class CheckoutController extends Controller
         // Verify stock before opening the transaction
         foreach ($cart->items as $item) {
             if ($item->quantity > $item->product->stock) {
-                return back()->with('error', "Only {$item->product->stock} units of \"{$item->product->name}\" are available.");
+                return back()->with('checkout_error', "Only {$item->product->stock} units of \"{$item->product->name}\" are available.");
             }
-            if (! $item->product->isApproved() || ! $item->product->inStock()) {
-                return back()->with('error', "Product \"{$item->product->name}\" is no longer available.");
+            if (! $item->product->isApproved() || $item->product->status !== Product::STATUS_ACTIVE || ! $item->product->inStock()) {
+                return back()->with('checkout_error', "Product \"{$item->product->name}\" is no longer available.");
             }
         }
 
@@ -104,7 +128,7 @@ class CheckoutController extends Controller
         } catch (\Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Something went wrong while placing your order. Please try again.');
+            return back()->with('checkout_error', 'Something went wrong while placing your order. Please try again.');
         }
 
         // Notifications (after the transaction succeeds)
@@ -133,7 +157,13 @@ class CheckoutController extends Controller
 
         AuditService::log('Order placed', 'Orders', "Order {$order->order_number} placed for $".number_format($order->total_amount, 2));
 
-        return redirect()->route('orders.show', $order->id)
-            ->with('success', "Your order {$order->order_number} has been placed successfully. Pay Rs. ".number_format($order->total_amount, 2).' on delivery.');
+        // Online / bank payments continue to the payment gateway; COD is done.
+        if (in_array($order->payment->payment_method, [Payment::METHOD_COD], true)) {
+            return redirect()->route('orders.show', $order->id)
+                ->with('success', "Your order {$order->order_number} has been placed successfully. Pay Rs. ".number_format($order->total_amount, 2).' on delivery.');
+        }
+
+        return redirect()->route('payment.initiate', $order->id)
+            ->with('success', "Order {$order->order_number} created. Please complete your payment to confirm it.");
     }
 }

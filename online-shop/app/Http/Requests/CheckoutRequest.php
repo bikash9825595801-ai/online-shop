@@ -23,7 +23,7 @@ class CheckoutRequest extends FormRequest
             'postal_code' => ['nullable', 'string', 'max:20'],
             'country' => ['required', 'string', 'max:100'],
             'notes' => ['nullable', 'string', 'max:1000'],
-            'payment_method' => ['required', 'in:cod'],
+            'payment_method' => ['required', 'in:cod,esewa,khalti,card,bank'],
         ];
     }
 }

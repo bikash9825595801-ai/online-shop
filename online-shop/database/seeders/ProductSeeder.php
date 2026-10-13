@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
+    /** Catalog prices below are in USD; convert to Nepali Rupees (NPR) on insert. */
+    private const USD_TO_NPR = 135;
+
     public function run(): void
     {
         $sellers = User::where('role', User::ROLE_SELLER)->get();
@@ -69,14 +72,14 @@ class ProductSeeder extends Seeder
                 'seller_id' => $sellers->random()->id,
                 'category_id' => $category->id,
                 'name' => $name,
-                'slug' => Str::slug($name . '-' . Str::random(4)),
+                'slug' => Str::slug($name.'-'.Str::random(4)),
                 'description' => $description,
-                'price' => $price,
-                'discount_price' => $discount,
+                'price' => round($price * self::USD_TO_NPR),
+                'discount_price' => round($discount * self::USD_TO_NPR),
                 'stock' => $stock,
-                'sku' => 'SKU-' . strtoupper(Str::random(8)),
+                'sku' => 'SKU-'.strtoupper(Str::random(8)),
                 'brand' => $brand,
-                'image' => config('product-images.' . $name) ?? 'https://picsum.photos/seed/product' . $index . '/600/400',
+                'image' => config('product-images.'.$name) ?? 'https://picsum.photos/seed/product'.$index.'/600/400',
                 'status' => Product::STATUS_ACTIVE,
                 'approval_status' => $approval,
             ]);

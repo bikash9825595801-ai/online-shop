@@ -65,6 +65,12 @@
                             </div>
                         @endif
                         <input type="file" name="image" class="form-control" accept="image/*">
+                        @if ($product->image)
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" name="remove_image" id="removeImage" value="1">
+                                <label class="form-check-label small" for="removeImage">Remove current image</label>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <button type="submit" class="btn btn-brand mt-4"><i class="bi bi-check-lg me-1"></i> Save Changes</button>

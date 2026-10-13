@@ -33,6 +33,28 @@
             </div>
         @endif
 
+        @if ($order->payment && ! $order->payment->isPaid() && in_array($order->payment->payment_method, \App\Models\Payment::ONLINE_METHODS) && ! $order->isCancelled())
+            <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <strong><i class="bi bi-credit-card me-1"></i> Payment pending</strong>
+                    <div class="small">Complete your {{ $order->payment->methodLabel() }} payment to confirm this order.</div>
+                </div>
+                <a href="{{ route('payment.initiate', $order->id) }}" class="btn btn-brand btn-sm">
+                    <i class="bi bi-lock-fill me-1"></i> Pay Now
+                </a>
+            </div>
+        @elseif ($order->payment && ! $order->payment->isPaid() && $order->payment->payment_method === \App\Models\Payment::METHOD_BANK && ! $order->isCancelled())
+            <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <strong><i class="bi bi-bank me-1"></i> Bank transfer</strong>
+                    <div class="small">{{ $order->payment->proof_path ? 'Your receipt is awaiting verification.' : 'Upload your bank deposit receipt to confirm this order.' }}</div>
+                </div>
+                <a href="{{ route('payment.initiate', $order->id) }}" class="btn btn-brand btn-sm">
+                    <i class="bi bi-upload me-1"></i> {{ $order->payment->proof_path ? 'View / Re-upload' : 'Upload Receipt' }}
+                </a>
+            </div>
+        @endif
+
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card mb-3">
@@ -177,10 +199,18 @@
                 <div class="card mb-3">
                     <div class="card-header"><i class="bi bi-credit-card me-1"></i> Payment</div>
                     <div class="card-body small">
-                        <p class="mb-1"><strong>Method:</strong> {{ $order->payment ? ucwords(str_replace('_', ' ', $order->payment->payment_method)) : '—' }}</p>
+                        <p class="mb-1"><strong>Method:</strong> {{ $order->payment ? $order->payment->methodLabel() : '—' }}</p>
                         <p class="mb-1"><strong>Status:</strong> <span class="badge {{ payment_status_badge($order->payment_status) }}">{{ ucfirst($order->payment_status) }}</span></p>
                         @if ($order->payment?->transaction_id)
-                            <p class="mb-0"><strong>Transaction:</strong> {{ $order->payment->transaction_id }}</p>
+                            <p class="mb-1"><strong>Transaction:</strong> {{ $order->payment->transaction_id }}</p>
+                        @endif
+                        @if ($order->payment?->paid_at)
+                            <p class="mb-1"><strong>Paid at:</strong> {{ $order->payment->paid_at->format('M d, Y h:i A') }}</p>
+                        @endif
+                        @if ($order->payment && ! $order->payment->isPaid() && ! $order->isCancelled())
+                            <a href="{{ route('payment.initiate', $order->id) }}" class="btn btn-brand btn-sm w-100 mt-2">
+                                <i class="bi bi-lock-fill me-1"></i> Pay Now
+                            </a>
                         @endif
                     </div>
                 </div>

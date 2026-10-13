@@ -26,6 +26,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController as CustomerPaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
@@ -111,6 +112,14 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
         Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+        // Payment gateways (eSewa / Khalti / Card / Bank transfer)
+        Route::get('/payment/esewa/success', [CustomerPaymentController::class, 'esewaSuccess'])->name('payment.esewa.success');
+        Route::get('/payment/esewa/failure', [CustomerPaymentController::class, 'esewaFailure'])->name('payment.esewa.failure');
+        Route::get('/payment/khalti/callback', [CustomerPaymentController::class, 'khaltiCallback'])->name('payment.khalti.callback');
+        Route::post('/payment/{order}/esewa-qr', [CustomerPaymentController::class, 'esewaQr'])->name('payment.esewa.qr');
+        Route::get('/payment/{order}/pay', [CustomerPaymentController::class, 'initiate'])->name('payment.initiate');
+        Route::post('/payment/{order}/bank-proof', [CustomerPaymentController::class, 'bankProof'])->name('payment.bank.proof');
 
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

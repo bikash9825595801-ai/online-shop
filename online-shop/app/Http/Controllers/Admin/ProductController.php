@@ -72,6 +72,11 @@ class ProductController extends Controller
                 \Storage::disk('public')->delete($product->image);
             }
             $data['image'] = $request->file('image')->store('products', 'public');
+        } elseif ($request->boolean('remove_image') && $product->image && ! str_starts_with($product->image, 'http')) {
+            if (\Storage::disk('public')->exists($product->image)) {
+                \Storage::disk('public')->delete($product->image);
+            }
+            $data['image'] = null;
         }
 
         $product->update($data);

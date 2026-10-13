@@ -1,6 +1,6 @@
 <div class="topbar py-1">
     <div class="container d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-truck me-1"></i> Free delivery on orders over $100</span>
+        <span><i class="bi bi-truck me-1"></i> Free delivery on orders over Rs. 13,500</span>
         <div class="d-flex align-items-center gap-3">
             @auth
                 <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : (auth()->user()->isSeller() ? route('seller.dashboard') : route('customer.dashboard')) }}">
